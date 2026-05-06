@@ -76,4 +76,77 @@ public class UserController {
 
 		return "redirect:/user";
 	}
+
+	@GetMapping("/edit")
+	public String editView(@RequestParam("id") int id, Model model) {
+
+		User user = userService.findById(id);
+		model.addAttribute("user", user);
+
+		if (user == null) {
+			model.addAttribute("users", userService.findAll());
+			return "user/user";
+		}
+
+		List<String> languages = userService.findLanguages();
+		model.addAttribute("languages", languages);
+
+		return "user/edit-user";
+	}
+
+	@PostMapping("edit/save")
+	public String editSave(Model model, @Valid @ModelAttribute("user") User user, BindingResult bindingResult,
+			@RequestParam("avatarFile") MultipartFile avatarFile) {
+
+		User userDb = userService.findById(user.getId());
+
+		if (user == null) {
+			model.addAttribute("users", userService.findAll());
+			return "user/user";
+		}
+
+		if (userService.existsByUsernameExceptId(user.getUsername(), user.getId())) {
+			bindingResult.rejectValue("username", "error.user", "Tai khoan da ton tai, vui long chon ten khac");
+		}
+
+		if (user.getPassword() == null || user.getPassword().isBlank()) {
+			bindingResult.rejectValue("password", "error.user", "Mat khau khong duoc de trong");
+		}
+
+		String regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+=-]).{6,}$";
+		if (!user.getPassword().matches(regexp)) {
+			bindingResult.rejectValue("password", "error.user",
+					"Mat khau phai co chu hoa, chu thuong, chu so, ky tu dac biet, toi thieu 6 ky tu");
+		}
+
+		if (userService.existsByEmailExceptId(user.getEmail(), user.getId())) {
+			bindingResult.rejectValue("email", "error.user", "Email da ton tai, vui long chon email khac");
+		}
+
+		if (bindingResult.hasErrors()) {
+			List<String> languages = userService.findLanguages();
+			model.addAttribute("languages", languages);
+			model.addAttribute("user", user);
+			return "user/edit-user";
+		}
+
+		userService.update(user, avatarFile);
+
+		return "redirect:/user";
+	}
+
+	@GetMapping("/delete")
+	public String delete(Model model, @RequestParam("id") int id) {
+
+		User user = userService.findById(id);
+
+		if (user != null) {
+			userService.delete(user);
+		}
+
+		List<User> users = userService.findAll();
+
+		model.addAttribute("users", users);
+		return "user/user";
+	}
 }
