@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.JW35_NguyenVietKhanh_Day02.dto.Db;
-import com.example.JW35_NguyenVietKhanh_Day02.dto.Product;
+import com.example.JW35_NguyenVietKhanh_Day02.Db;
+import com.example.JW35_NguyenVietKhanh_Day02.entity.Product;
 import com.example.JW35_NguyenVietKhanh_Day02.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -51,8 +51,20 @@ public class ProductController {
 	@PostMapping("/add/save")
 	public String save(@Valid @ModelAttribute("product") Product product, BindingResult result,
 			@RequestParam("productImageFile") MultipartFile productImageFile, Model model) {
+		if (result.hasErrors()) {
+			List<Double> weights = Db.getWeights();
+			model.addAttribute("weights", weights);
+			model.addAttribute("product", product);
+			return "/product/new-product";
+		}
+
 		if (productService.existsByName(product.getName())) {
 			result.rejectValue("name", "error.product", "Ten san pham da ton tai");
+		}
+
+		if (product.getExpiryDate().isBefore(product.getManufactureDate())
+				|| product.getExpiryDate().equals(product.getManufactureDate())) {
+			result.rejectValue("expiryDate", "error.expiryDate", "HSD phai lon hon NSX");
 		}
 
 		if (result.hasErrors()) {
@@ -65,5 +77,60 @@ public class ProductController {
 		productService.save(product, productImageFile);
 
 		return "redirect:/product";
+	}
+
+	@GetMapping("/edit")
+	public String edit(@RequestParam("id") int id, Model model) {
+		Product product = productService.findById(id);
+		if (product == null) {
+			List<Product> list = productService.findAll();
+			model.addAttribute("products", list);
+			return "/product/product";
+		}
+
+		model.addAttribute("product", product);
+		List<Double> weights = Db.getWeights();
+		model.addAttribute("weights", weights);
+
+		return "/product/edit-product";
+	}
+
+	@PostMapping("/edit/save")
+	public String editSave(@Valid @ModelAttribute("product") Product product, BindingResult result, Model model,
+			MultipartFile productImageFile) {
+
+		if (productService.existsByNameExceptID(product.getName(), product.getId())) {
+			result.rejectValue("name", "error.product", "Ten san pham da ton tai");
+		}
+
+		if (product.getExpiryDate().isBefore(product.getManufactureDate())
+				|| product.getExpiryDate().equals(product.getManufactureDate())) {
+			result.rejectValue("expiryDate", "error.expiryDate", "HSD phai lon hon NSX");
+		}
+
+		if (result.hasErrors()) {
+			List<Double> weights = Db.getWeights();
+			model.addAttribute("weights", weights);
+			model.addAttribute("product", product);
+			return "/product/edit-product";
+		}
+
+		productService.update(product, productImageFile);
+
+		List<Product> products = productService.findAll();
+		model.addAttribute("products", products);
+		return "/product/product";
+	}
+
+	@GetMapping("/delete")
+	public String delete(@RequestParam("id") int id, Model model) {
+		Product product = productService.findById(id);
+		if (product != null) {
+			productService.delete(product);
+		}
+
+		List<Product> list = productService.findAll();
+		model.addAttribute("products", list);
+		return "/product/product";
 	}
 }

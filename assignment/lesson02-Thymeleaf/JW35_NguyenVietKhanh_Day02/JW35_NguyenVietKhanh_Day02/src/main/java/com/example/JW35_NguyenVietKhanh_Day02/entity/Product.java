@@ -1,4 +1,4 @@
-package com.example.JW35_NguyenVietKhanh_Day02.dto;
+package com.example.JW35_NguyenVietKhanh_Day02.entity;
 
 import java.time.LocalDate;
 

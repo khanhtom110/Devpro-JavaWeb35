@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.example.JW35_NguyenVietKhanh_Day02.dto.Constant;
+import com.example.JW35_NguyenVietKhanh_Day02.constant.Constant;
 
 @Configuration
 public class MvcConfigurer implements WebMvcConfigurer, Constant {
