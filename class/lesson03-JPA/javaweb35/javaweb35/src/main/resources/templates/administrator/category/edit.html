@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16"
+        th:href="@{/administrator/assets/images/favicon.png}">
+  <title th:text="${title}">Trang quản trị</title>
+  <th:block th:insert="~{administrator/layout/css :: css}"></th:block>
+  
+</head>
+
+<body>
+
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
+        
+        <!-- Topbar header - style you can find in pages.scss -->
+        <div th:replace="~{administrator/layout/header :: header}"></div>
+        <!-- End Topbar header -->
+       
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <div th:replace="~{administrator/layout/left-slide-bar :: left-slide-bar}"></div>
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+        <div class="page-wrapper">
+            <!-- ============================================================== -->
+            <!-- Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <div class="page-breadcrumb">
+                <div class="row">
+                    <div class="col-7 align-self-center">
+                        <h2 class="page-title text-truncate text-dark font-weight-medium mb-1">Edit Category</h2>
+                        <label th:if="${saveError}" th:text="'Could not save category'"></label>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- Container fluid  -->
+            <!-- ============================================================== -->
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
+                <!-- basic table -->
+               	<div class="row">
+                	<div class="col-12">
+	                    <div class="card">
+	                        <div class="card-body">
+	                        	<form class="form" th:action="@{/admin/category/edit/save}" method="post" 
+	                        				th:object="${categoryDto}">
+	                        		 <div class="form-body">
+	                        			<div class="row">
+	                                    	
+	                                    	<div class="col-md-2">
+												<div class="form-group mb-4">
+			                                        <label for="categoryId">Category ID</label>
+			                                        <input th:field="${category.id}" class="form-control" readonly></input>
+                                        		</div>
+	                                    	</div>
+	                                    	
+	                                    	<div class="col-md-5">
+												<div class="form-group mb-4">
+			                                        <label for="parentCategory">Parent Category</label>
+			                                        <select id="categoryId" class="form-control" 
+			                                        		th:field="*{categoryId}">
+			                                        	<option th:value="0" th:text="'Super Category'"></option>
+			                                            <option th:each="category : ${categories}" 
+			                                            		th:value="${category.id}" th:text="${category.name}"></option>
+			                                        </select>
+			                                        <p th:if="${#fields.hasErrors('categoryId')}"
+														th:errorclass="text-danger"
+														th:errors="*{categoryId}">
+													</p>
+                                        		</div>
+	                                    	</div>
+	                                    	
+	                        		 		<div class="col-md-5">
+												<div class="form-group mb-4">
+			                                        <label for="name">Category name</label>
+			                                        <input th:field="*{name}" class="form-control" id="name" placeholder="Category name"></input>
+                                        		</div>
+                                        		<p th:if="${#fields.hasErrors('name')}"
+													th:errorclass="text-danger"
+													th:errors="*{name}">
+												</p>
+	                                    	</div>
+										</div>
+										
+										<div class="row">
+	                        		 		<div class="col-md-6">
+												<div class="form-group mb-4">
+			                                        <label for="category">Create by</label>
+			                                        <select th:field="*{createById}" class="form-control" id="userCreateCategory">
+			                                            <option th:value="0" th:text="'--Select user--'"></option>
+			                                            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+			                                        </select>
+                                        		</div>
+                                        		<p th:if="${#fields.hasErrors('createById')}"
+														th:errorclass="text-danger"
+														th:errors="*{createById}">
+												</p>
+	                                    	</div>
+									
+											<div class="col-md-6">
+												<div class="form-group mb-4">
+			                                        <label for="category">Update by</label>
+			                                        <select th:field="*{updateById}" class="form-control" 
+			                                        	id="updateById">
+			                                            <option th:value="0" th:text="'--Select user--'"></option>
+			                                            <option th:each="user : ${users }" th:value="${user.id}" th:text="${user.username}"></option>
+			                                        </select>
+                                        		</div>
+                                        		<p th:if="${#fields.hasErrors('updateById')}"
+														th:errorclass="text-danger"
+														th:errors="*{updateById}">
+												</p>
+	                                    	</div>
+										</div>
+										<div class="row">
+	                        		 		<div class="col-md-6">
+												<div class="form-group mb-4">
+			                                        <label for="createDate">Create date</label>
+			                                        
+			                                        <input th:field="*{createDate}" class="form-control" type="date" 
+			                                        			id="createDate"></input>
+			                                        <p th:if="${#fields.hasErrors('createDate')}"
+														th:errorclass="text-danger"
+														th:errors="*{createDate}">
+													</p>
+                                        		</div>
+	                                    	</div>
+									
+											<div class="col-md-6">
+												<div class="form-group mb-4">
+			                                        <label for="updateDate">Update date</label>
+			                                       
+			                                        <input th:field="*{updateDate}" class="form-control" type="date" 
+			                                        		id="updateDate"></input>
+			                                        <p th:if="${#fields.hasErrors('updateDate')}"
+														th:errorclass="text-danger"
+														th:errors="*{updateDate}">
+													</p>
+                                        		</div>
+	                                    	</div>
+										</div>
+										
+										<div class="row">
+	                        		 		<div class="col-md-12">
+												<div class="form-group mb-4">
+			                                        <label for="description">Description</label>
+			                                        <textarea th:field="*{description}" id="description" name="description"
+																class="form-control" rows="3" placeholder="desription..."></textarea>
+                                        		</div>
+	                                    	</div>
+										</div>
+										
+										<div class="row">
+	                                    	
+	                                    	<div class="col-md-12">
+												<div class="form-group mb-4">
+													<input type="checkbox" th:field="*{status}" class="form-check-input" 
+													id="status" style="margin-left: 0;"></input>
+			                                        <label for="status" style="margin-left: 18px;">Active</label>			                                       
+                                        		</div>
+	                                    	</div>
+	                                    	
+										</div>
+										
+										
+										<div class="row">
+	                        		 		<div class="col-md-12">
+												<div class="form-group mb-4">
+			                                        <a th:href="@{/admin/category}" class="btn btn-secondary active" role="button" aria-pressed="true">
+			                                        	Back to list
+			                                        </a>
+                                    				<button type="submit" class="btn btn-primary">Save category</button>
+                                        		</div>
+	                                    	</div>
+										</div>
+										
+	                        		</div>
+	                        	</form>
+	                        </div>
+	                    </div>    
+                  </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <div th:replace="~{administrator/layout/footer :: footer}"></div>
+            <!-- ============================================================== -->
+            <!-- End footer -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    </div>
+	<!-- Slider js: All Jquery-->
+    <div th:replace="~{administrator/layout/js :: js}"></div>
+</body>
+
+</html>

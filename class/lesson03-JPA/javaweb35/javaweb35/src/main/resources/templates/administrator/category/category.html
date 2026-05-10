@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- Tell the browser to be responsive to screen width -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" type="image/png" sizes="16x16"
+	th:href="@{/administrator/assets/images/favicon.png}">
+<title th:text="${title}">Trang quản trị</title>
+<th:block th:insert="~{administrator/layout/css :: css}"></th:block>
+</head>
+
+<body>
+	<!-- ============================================================== -->
+	<!-- Main wrapper - style you can find in pages.scss -->
+	<!-- ============================================================== -->
+	<div id="main-wrapper" data-theme="light" data-layout="vertical"
+		data-navbarbg="skin6" data-sidebartype="full"
+		data-sidebar-position="fixed" data-header-position="fixed"
+		data-boxed-layout="full">
+
+		<!-- Topbar header - style you can find in pages.scss -->
+		<div th:replace="~{administrator/layout/header :: header}"></div>
+		<!-- End Topbar header -->
+
+		<!-- Left Sidebar - style you can find in sidebar.scss  -->
+		<div th:replace="~{administrator/layout/left-slide-bar :: left-slide-bar}"></div>
+		<!-- End Left Sidebar - style you can find in sidebar.scss  -->
+
+		<!-- Page wrapper  -->
+		<!-- ============================================================== -->
+		<div class="page-wrapper">
+			<!-- ============================================================== -->
+			<!-- Bread crumb and right sidebar toggle -->
+			<!-- ============================================================== -->
+			<div class="page-breadcrumb">
+				<div class="row">
+					<div class="col-7 align-self-center">
+						<h2
+							class="page-title text-truncate text-dark font-weight-medium mb-1">List
+							Category</h2>
+					</div>
+				</div>
+			</div>
+			<!-- ============================================================== -->
+			<!-- End Bread crumb and right sidebar toggle -->
+			<!-- ============================================================== -->
+			<!-- ============================================================== -->
+			<!-- Container fluid  -->
+			<!-- ============================================================== -->
+			<div class="container-fluid">
+				<!-- ============================================================== -->
+				<!-- Start Page Content -->
+				<!-- ============================================================== -->
+				<!-- basic table -->
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<!-- Column -->
+									<div class="col-md-6 col-lg-3 col-xlg-3">
+										<div class="card card-hover">
+											<div class="p-2 bg-primary text-center">
+												<h1 class="font-light text-white">2,064</h1>
+												<h6 class="text-white">Total Tickets</h6>
+											</div>
+										</div>
+									</div>
+									<!-- Column -->
+									<div class="col-md-6 col-lg-3 col-xlg-3">
+										<div class="card card-hover">
+											<div class="p-2 bg-cyan text-center">
+												<h1 class="font-light text-white">1,738</h1>
+												<h6 class="text-white">Responded</h6>
+											</div>
+										</div>
+									</div>
+									<!-- Column -->
+									<div class="col-md-6 col-lg-3 col-xlg-3">
+										<div class="card card-hover">
+											<div class="p-2 bg-success text-center">
+												<h1 class="font-light text-white">1100</h1>
+												<h6 class="text-white">Resolve</h6>
+											</div>
+										</div>
+									</div>
+									<!-- Column -->
+									<div class="col-md-6 col-lg-3 col-xlg-3">
+										<div class="card card-hover">
+											<div class="p-2 bg-danger text-center">
+												<h1 class="font-light text-white">964</h1>
+												<h6 class="text-white">Pending</h6>
+											</div>
+										</div>
+									</div>
+									<!-- Column -->
+								</div>
+								<div class="table-responsive">
+
+									<div class="row">
+										<div class="col-md-3">
+											<div class="form-group mb-4">
+												<a th:href="@{/admin/category/add}" role="button"
+													class="btn btn-primary">New Category</a>
+											</div>
+										</div>
+
+										<div class="col-md-9">
+											<div class="form-group mb-4">
+												<form method="get" th:action="@{/admin/category}" class="form-inline mb-3">
+													<input type="hidden" name="column" th:value="${column}">
+													<input type="hidden" name="direction" th:value="${direction}"> 
+													<input type="hidden" name="page" th:value="${currentPage}"> 
+													<div class="form-group mr-2">
+														<select name="size" class="form-control" onchange="this.form.submit()">
+															<option th:value="3" th:selected="${pageSize==3}">3</option>
+															<option th:value="5" th:selected="${pageSize==5}">5</option>
+															<option th:value="7" th:selected="${pageSize==7}">7</option>
+															<option th:value="11" th:selected="${pageSize==11}">11</option>
+														</select>
+													</div>
+													<div class="form-group mr-2">
+														<input type="text" class="form-control" name="name"
+															placeholder="Search name..." th:value="${name}">
+													</div>
+
+													<div class="form-group mr-2">
+														<input type="date" class="form-control" name="fromDate"
+															th:value="${fromDate != null ? #temporals.format(fromDate, 'yyyy-MM-dd') : ''}">
+													</div>
+
+													<div class="form-group mr-2">
+														<input type="date" class="form-control" name="toDate"
+															th:value="${toDate != null ? #temporals.format(toDate, 'yyyy-MM-dd') : ''}">
+													</div>
+
+													<button type="submit" class="btn btn-primary">Search</button>
+
+													<a class="btn btn-outline-secondary ml-2"
+														th:href="@{/admin/category}">Reset</a>
+												</form>
+											</div>
+										</div>
+									</div>
+
+									<table class="table">
+										<thead>
+											<tr>
+												<th scope="col">No.</th>
+
+												<th scope="col">
+													<a th:href="@{/admin/category(
+															page=${currentPage},
+															size=${pageSize},
+															column='id',
+															direction=${direction == 'asc' ? 'desc' : 'asc'})}">ID</a>
+													<small th:if="${column=='id'}"
+															th:text="|(${direction ?: 'ASC'})|">
+													</small>
+												</th>
+
+												<th scope="col">
+													<a th:href="@{/admin/category(
+															page=${currentPage},
+															size=${pageSize},
+															column='parentCategory.name',
+															direction=${direction == 'asc' ? 'desc' : 'asc'})}">Parent category</a>
+													<small th:if="${column=='parentCategory.name'}"
+															th:text="|(${direction ?: 'ASC'})|">
+													</small>
+													
+													 
+												</th>
+
+												<th scope="col">
+													<a th:href="@{/admin/category(
+															page=${currentPage},
+															size=${pageSize},
+															column='name',
+															direction=${direction == 'asc' ? 'desc' : 'asc'})}">Name</a>
+													<small th:if="${column=='name'}"
+															th:text="|(${direction ?: 'ASC'})|">
+													</small>
+												</th>
+
+												<th scope="col">Create by</th>
+												<th scope="col">Update by</th>
+
+												<th scope="col">
+													<a th:href="@{/admin/category(
+															page=${currentPage},
+															size=${pageSize},
+															column='createDate',
+															direction=${direction == 'asc' ? 'desc' : 'asc'})}">Create date</a>
+													<small th:if="${column=='createDate'}"
+															th:text="|(${direction ?: 'ASC'})|">
+													</small>
+												</th>
+
+												<th scope="col">Update date</th>
+												<th scope="col">Status</th>
+												<th scope="col">Description</th>
+												<th scope="col">Actions</th>
+											</tr>
+										</thead>
+										<tbody>
+
+											<tr th:each="category, loop : ${categories}">
+												<td scope="col" th:text="${loop.index + 1}"></td>
+												<td scope="col" th:text="${category.id}"></td>
+												<!-- th:if="${category.parentCategory != null}" -->
+												<td scope="col"
+													th:text="${category.parentCategory != null ? 
+														category.parentCategory.name : 'Super category'}"></td>
+
+												<td scope="col" th:text="${category.name}"></td>
+												<td scope="col"
+													th:if="${category.createBy != null}"
+													th:text="${category.createBy.username}"></td>
+												<td th:unless="${category.createBy != null}"></td>
+												<td scope="col"
+													th:if="${category.updateBy != null}"
+													th:text="${category.updateBy.username}"></td>
+												<td th:unless="${category.updateBy != null}"></td>
+												<td scope="col" th:if="${category.createDate != null}"
+													th:text="${#temporals.format(category.createDate, 'dd-MM-yyyy')}"></td>
+												<td th:unless="${category.createDate != null}"></td>
+												<td scope="col" th:if="${category.updateDate != null}"
+													th:text="${#temporals.format(category.updateDate, 'dd-MM-yyyy')}"></td>
+												<td th:unless="${category.updateDate != null}"></td>
+												<td scope="col"><span
+													th:text="${category.status} ? 'Active' : 'Inactive'"></span></td>
+												<td scope="col" th:text="${category.description}"></td>
+												<td scope="col" style="white-space: nowrap">
+													<a
+														th:href="@{/admin/category/edit(id=${category.id})}"
+														role="button" class="btn btn-primary btn-sm">Edit</a> 
+													<a
+														th:href="@{/admin/category/delete(id=${category.id})}"
+														role="button" class="btn btn-danger btn-sm"
+														onclick="return confirm('Are you sure?')">Delete
+													</a>
+												</td>
+											</tr>
+										</tbody>
+										<tfoot>
+											<tr>
+												<th scope="col">No.</th>
+												<th scope="col">Id</th>
+												<th scope="col">Name</th>
+												<th scope="col">Create by</th>
+												<th scope="col">Update by</th>
+												<th scope="col">Create date</th>
+												<th scope="col">Update date</th>
+												<th scope="col">Status</th>
+												<th scope="col">Description</th>
+												<th scope="col">Actions</th>
+											</tr>
+										</tfoot>
+									</table>
+
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group mb-4">
+												<a th:href="@{/admin/category/add}" role="button"
+													class="btn btn-primary">New Category</a>
+											</div>
+										</div>
+  
+										<div class="col-md-6">
+											<ul class="pagination float-right">
+												<!-- Previous -->
+												<li class="page-item"
+													th:classappend="${categoriesPage.first} ? ' disabled' : ''">
+													<a class="page-link" th:href="@{/admin/category(
+														page=${currentPage-1}, 
+														size=${pageSize},
+														column=${column},
+														direction=${direction},
+														name=${name},
+														fromDate=${fromDate != null ? #temporals.format(fromDate, 'yyyy-MM-dd') : null},
+														toDate=${toDate != null ? #temporals.format(toDate, 'yyyy-MM-dd') : null})}">Previous
+													</a>
+												</li>
+												
+												
+												<!-- Page numbers -->
+												<li class="page-item"
+													th:each="i : ${#numbers.sequence(0, categoriesPage.totalPages-1)}"
+													th:classappend="${i}==${currentPage} ? ' active' : ''">
+													<a class="page-link" th:text="${i+1}" 
+														th:href="@{/admin/category(
+														page=${i}, 
+														size=${pageSize},
+														column=${column},
+														direction=${direction},
+														name=${name},
+														fromDate=${fromDate != null ? #temporals.format(fromDate, 'yyyy-MM-dd') : null},
+														toDate=${toDate != null ? #temporals.format(toDate, 'yyyy-MM-dd') : null})}">
+													</a>
+												</li>
+												
+												<!-- Next -->
+												<li class="page-item"
+													th:classappend="${categoriesPage.last} ? ' disabled' : ''">
+													<a class="page-link"
+														th:href="@{/admin/category(
+															page=${currentPage+1}, 
+															size=${pageSize},
+															column=${column},
+															direction=${direction},
+															name=${name},
+															fromDate=${fromDate != null ? #temporals.format(fromDate, 'yyyy-MM-dd') : null},
+															toDate=${toDate != null ? #temporals.format(toDate, 'yyyy-MM-dd') : null})}">Next
+													</a>
+												</li> 
+												
+											</ul>
+										</div> 
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- ============================================================== -->
+			<!-- End Container fluid  -->
+			<!-- ============================================================== -->
+			<!-- ============================================================== -->
+			<!-- footer -->
+			<!-- ============================================================== -->
+			<div th:replace="~{administrator/layout/footer :: footer}"></div>
+			<!-- ============================================================== -->
+			<!-- End footer -->
+			<!-- ============================================================== -->
+		</div>
+		<!-- ============================================================== -->
+		<!-- End Page wrapper  -->
+		<!-- ============================================================== -->
+	</div>
+	<!-- ============================================================== -->
+	<!-- End Wrapper -->
+	<!-- ============================================================== -->
+	<!-- End Wrapper -->
+	<!-- ============================================================== -->
+
+	<!-- Slider js: All Jquery-->
+	<div th:replace="~{administrator/layout/js :: js}"></div>
+</body>
+
+</html>
