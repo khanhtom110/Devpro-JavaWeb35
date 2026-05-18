@@ -42,7 +42,7 @@ public class Category {
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "category_id", referencedColumnName = "id")
-	private Category category;
+	private Category parentCategory;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "create_by", referencedColumnName = "id")
@@ -57,7 +57,7 @@ public class Category {
 	}
 
 	public Category(Integer id, String name, LocalDate createDate, LocalDate updateDate, String description,
-			Boolean status, Category category, User createBy, User updateBy) {
+			Boolean status, Category parentCategory, User createBy, User updateBy) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -65,7 +65,7 @@ public class Category {
 		this.updateDate = updateDate;
 		this.description = description;
 		this.status = status;
-		this.category = category;
+		this.parentCategory = parentCategory;
 		this.createBy = createBy;
 		this.updateBy = updateBy;
 	}
@@ -118,12 +118,12 @@ public class Category {
 		this.status = status;
 	}
 
-	public Category getCategory() {
-		return category;
+	public Category getParentCategory() {
+		return parentCategory;
 	}
 
-	public void setCategory(Category category) {
-		this.category = category;
+	public void setParentCategory(Category parentCategory) {
+		this.parentCategory = parentCategory;
 	}
 
 	public User getCreateBy() {

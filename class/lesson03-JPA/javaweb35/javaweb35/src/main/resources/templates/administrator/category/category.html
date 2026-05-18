@@ -273,8 +273,8 @@
 										</div>
   
 										<div class="col-md-6">
-											<ul class="pagination float-right">
-												<!-- Previous -->
+											<!-- <ul class="pagination float-right">
+												Previous
 												<li class="page-item"
 													th:classappend="${categoriesPage.first} ? ' disabled' : ''">
 													<a class="page-link" th:href="@{/admin/category(
@@ -289,7 +289,7 @@
 												</li>
 												
 												
-												<!-- Page numbers -->
+												Page numbers
 												<li class="page-item"
 													th:each="i : ${#numbers.sequence(0, categoriesPage.totalPages-1)}"
 													th:classappend="${i}==${currentPage} ? ' active' : ''">
@@ -305,7 +305,7 @@
 													</a>
 												</li>
 												
-												<!-- Next -->
+												Next
 												<li class="page-item"
 													th:classappend="${categoriesPage.last} ? ' disabled' : ''">
 													<a class="page-link"
@@ -320,7 +320,7 @@
 													</a>
 												</li> 
 												
-											</ul>
+											</ul> -->
 										</div> 
 									</div>
 								</div>
