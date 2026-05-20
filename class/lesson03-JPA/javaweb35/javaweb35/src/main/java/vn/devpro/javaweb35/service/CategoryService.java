@@ -7,7 +7,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import vn.devpro.javaweb35.dto.CategoryDto;
 import vn.devpro.javaweb35.model.Category;
+import vn.devpro.javaweb35.model.User;
 import vn.devpro.javaweb35.repository.CategoryRepository;
 import vn.devpro.javaweb35.repository.UserRepository;
 
@@ -79,4 +81,76 @@ public class CategoryService {
 //		}
 //		return categoryRepository.findAll(specification,pageable);
 //	}
+
+	public Category insert(CategoryDto categoryDto) {
+		// TODO Auto-generated method stub
+		Category category = new Category();
+		category.setId(null);
+
+		category.setName(categoryDto.getName());
+		category.setDescription(categoryDto.getDescription());
+		category.setStatus(categoryDto.getStatus() != null ? category.getStatus() : Boolean.TRUE);
+		category.setCreateDate(categoryDto.getCreateDate());
+		category.setUpdateDate(categoryDto.getUpdateDate());
+
+		// Có chọn category cha
+		if (categoryDto.getCategoryId() != null && categoryDto.getCategoryId() != 0) {
+			category.setParentCategory(categoryRepository.getReferenceById(categoryDto.getCategoryId()));
+		} else {
+			category.setParentCategory(null);
+		}
+
+		if (categoryDto.getCreateById() != null && categoryDto.getCreateById() != 0) {
+			User createBy = userRepository.getReferenceById(categoryDto.getCreateById());
+			category.setCreateBy(createBy);
+		} else {
+			category.setCreateBy(null);
+		}
+
+		return categoryRepository.save(category);
+
+	}
+
+	public Category update(Integer id, CategoryDto categoryDto) {
+		// TODO Auto-generated method stub
+		Category category = findById(id);
+
+		category.setName(categoryDto.getName());
+		category.setCreateDate(categoryDto.getCreateDate());
+		category.setUpdateDate(categoryDto.getUpdateDate());
+		category.setDescription(categoryDto.getDescription());
+		category.setStatus(categoryDto.getStatus());
+
+		if (categoryDto.getCategoryId() != null && categoryDto.getCategoryId() > 0) {
+			category.setParentCategory(categoryRepository.getReferenceById(categoryDto.getCategoryId()));
+		} else {
+			category.setParentCategory(null);
+		}
+
+		// Co cho sua Create by, khong thi bo doan code nay
+		if (categoryDto.getCreateById() != null && categoryDto.getCreateById() != 0) {
+			User createBy = userRepository.getReferenceById(categoryDto.getCreateById());
+			category.setCreateBy(createBy);
+		} else {
+			category.setCreateBy(null);
+		}
+
+		// Cap nhat Update by
+		if (categoryDto.getUpdateById() != null && categoryDto.getUpdateById() > 0) {
+			category.setUpdateBy(userRepository.getReferenceById(categoryDto.getUpdateById()));
+		}
+		return categoryRepository.save(category);
+	}
+
+	public void inactive(Integer id) {
+		Category category = findById(id);
+
+		if (category == null) {
+			return;
+		}
+
+		category.setStatus(false);
+
+		categoryRepository.save(category);
+	}
 }

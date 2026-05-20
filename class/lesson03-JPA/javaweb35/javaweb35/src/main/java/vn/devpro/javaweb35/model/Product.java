@@ -2,9 +2,12 @@ package vn.devpro.javaweb35.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -59,7 +63,28 @@ public class Product {
 	@Column(name = "status")
 	private Boolean status = Boolean.TRUE;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "category_id", referencedColumnName = "id")
 	private Category category;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "create_by", referencedColumnName = "id")
+	private User createBy;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "update_by", referencedColumnName = "id")
+	private User updateBy;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
+	private List<ProductImage> productImages = new ArrayList<ProductImage>();
+
+	public void addRelationalProductImage(ProductImage productImage) {
+		productImages.add(productImage);
+		productImage.setProduct(this);
+	}
+
+	public void removeRelationalProductImage(ProductImage productImage) {
+		productImages.remove(productImage);
+		productImage.setProduct(this);
+	}
 }
