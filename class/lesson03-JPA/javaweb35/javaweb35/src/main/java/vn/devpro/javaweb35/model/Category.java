@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tbl_catgory")
+@Table(name = "tbl_category")
 public class Category {
 
 	@Id

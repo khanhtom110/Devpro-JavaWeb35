@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="16x16"
+			th:href="@{/customer/images/logo.jpg}">
+	<title th:text="${title}">Trang khach hang</title>
+	
+	<!-- CSS -->
+	<th:block th:insert="~{customer/layout/css :: css}"></th:block>
+    
+</head>
+
+<body>
+    <div class="wrapper">
+    
+    	<!-- Header -->
+        <div th:replace="~{customer/layout/header :: header}"></div>
+       
+        <main class="main">
+            
+            <!-- San pham noi bat 
+            <div th:replace="~{customer/layout/hotproduct :: hotproduct}"></div>
+            -->
+            
+            <!-- Sale -->
+            <div th:replace="~{customer/layout/sale :: sale}"></div>
+            
+            <!-- Danh mục sản phẩm -->
+            <div class="main__products">
+                <div class="container">
+                    <div class="main__products-title">
+                        <p>Danh sách sản phẩm</p>
+                    </div>
+                    <div class="main__products-content">
+                        <div class="row" th:if="${products.size() > 0}">
+                            <div class="col-12 col-lg-3 col-md-6" th:each="product : ${products}">
+                                <div class="product">
+                                    <div class="thumb">
+                                        <a th:href="@{/product(id=${product.id})}" class="image">
+                                            <img class="fit-img zoom-img"
+												     th:src="${product.avatar != null} ?
+												             @{/UploadFiles/{path}(path=${product.avatar})} :
+												             @{/customer/img/no-image.png}"/>
+                                        </a>
+                                        <span class="badges">
+                                            <!-- <span class="sale">-20%</span> -->
+                                            <span class="new" th:if="${product.isHot}">new</span>
+
+                                        </span>
+                                    </div>
+                                    <div class="content">
+                                        <a th:href="@{/product(id=${product.id})}" class="content-link">
+                                            <span class="title" th:text="${product.name}"></span>
+                                        </a>
+                                        <span class="price">
+                                            <!-- <span class="old">20.000.000đ</span> -->
+                                            <span class="new" th:text="${#numbers.formatDecimal(
+                                            		product.salePrice > 0 ? product.salePrice : product.price,
+                                            		0, 'COMMA', 0, 'POINT')} + 'đ'"></span>
+                                        </span>
+                                        <span class="symbol">
+                                            <a href="#"><i class='bx bx-heart'></i></a>
+                                            <button type="button"
+                                            		th:data-id="${product.id}"
+                                            		th:data-name="${product.name}"
+                                            		th:onclick="addToCart(this.dataset.id, 1, this.dataset.name)"
+                                            		class="cart-btn-icon">
+												<i class='bx bx-cart'></i> </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                         
+                        </div>
+                    </div>
+                    <div class="main__products-more">
+                        <ul class="pagination justify-content-end">
+												<!-- Previous -->
+												<li class="page-item mx-1"
+													th:classappend="${productPage.first} ? ' disabled' : ''">
+													<a class="page-link" th:href="@{${requestURI}(
+														page=${page > 0 ? page-1 : 0}, 
+														size=${size},
+														column=${column},
+														direction=${direction})}">Previous
+													</a>
+												</li>
+
+												<!-- Page numbers -->
+												<li class="page-item mx-1" th:if="${productPage.totalPages > 0}"
+													th:each="i : ${#numbers.sequence(0, productPage.totalPages-1)}"
+													th:classappend="${i}==${page} ? ' active' : ''">
+													<a class="page-link" th:text="${i+1}" 
+														th:href="@{${requestURI}(
+														page=${i}, 
+														size=${size},
+														column=${column},
+														direction=${direction})}">
+													</a>
+												</li>
+
+												<!-- Next -->
+												<li class="page-item mx-1"
+													th:classappend="${productPage.last} ? ' disabled' : ''">
+													<a class="page-link"
+														th:href="@{${requestURI}(
+															page=${page+1}, 
+															size=${size},
+															column=${column},
+															direction=${direction})}">Next
+													</a>
+												</li>
+											</ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Danh sách phụ kiện -->
+			<div th:replace="~{customer/layout/accessory :: accessory}"></div>
+            <!-- Tin tức -->
+			<div th:replace="~{customer/layout/news :: news}"></div>
+            <!-- main bottom -->
+            <div th:replace="~{customer/layout/mainbottom :: mainbottom}"></div>
+        </main>
+        <!-- Footer -->
+        <div th:replace="~{customer/layout/footer :: footer}"></div>
+        <div class="scroll__top">
+            <i class='bx bx-up-arrow-alt'></i>
+        </div>
+
+        <!-- mobile menu -->
+		<div th:replace="~{customer/layout/mobilemenu :: mobilemenu}"></div>
+    </div>
+    <!-- JS -->
+	<div th:replace="~{customer/layout/js :: js}"></div>
+	
+	<script>
+		function addToCart(productId, quantity, name) {
+		    //const qty = document.getElementById("quantity").value;
+		
+		    fetch('/cart/add?productId=' + productId + '&addQuantity=' + quantity +
+		    								'&name=' + encodeURIComponent(name), {
+		        method: 'POST'
+		    })
+		    .then(res => res.json())
+		    .then(data => {
+		        if (data.success) {
+		            // Cập nhật số lượng giỏ hàng ở header
+		            document.getElementById("totalProducts").innerText = data.totalProducts;
+		
+		            // Thêm thông báo
+		            alert("Đã thêm " + quantity + " '" + name + "' vào giỏ hàng!");
+		        }
+		    });
+		}
+	</script>
+	
+
+</body>
+
+</html>
